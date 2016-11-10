@@ -1,0 +1,125 @@
+.\" Copyright (c) 2016 Dmitrij D. Czarkoff
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: November 10 2016$
+.Dt TKGITHUB 1
+.Os
+.Sh NAME
+.Nm TkGitHub
+.Nd GitHub notifications in system tray
+.Sh SYNOPSIS
+.Nm
+.Sh DESCRIPTION
+.Nm
+periodically retrievs GitHub notifications and displays them in a drop menu
+attached to its system tray icon.
+Clicking on notification opens corresponding page on GitHub; notification is
+marked as read.
+.Pp
+The icon indicates whether there are unread notifications.
+If unread notifications are available a popup menu will contain a
+.Cm Mark all read
+command and commands for individual discussion threads.
+The popup menu always contains an
+.Cm Exit
+command, which is the preferred way of exiting application.
+.Pp
+Balloon tooltip for system tray icon shows the time of the last connection to
+GitHub.
+Depending on system tray implementation, balloon tooltips may not be shown.
+.Pp
+.Nm
+needs a valid GitHub personal access token for its operation, and it is user's
+responsibility to provide one.
+The token may be acquired from GutHub settings page
+.Dq Personal access tokens
+which is located at
+.Lk https://github.com/settings/tokens .
+The only OAuth scope
+.Nm
+needs for its operation is
+.Dq notifications .
+It is highly recommended to use a dedicated token with no extra scopes in order
+to prevent unexpected consequences.
+See
+.Sx SECURITY CONSIDERATIONS
+section for details.
+.Sh ENVIRONMENT
+.Bl -tag -width "GH_TOKENXXX"
+.It GH_TOKEN
+.Nm
+Uses this GitHub token unless configuration file overrides it.
+.El
+.Sh FILES
+.Bl -tag -width Ds
+.It Pa ~/.config/tkgithubrc
+Configuration file.
+.Nm
+evaluates it as Tcl source code.
+See
+.Sx SECURITY CONSIDERATIONS
+section for details.
+.Pp
+Following variables may be set:
+.Bl -tag -width Ds
+.It Cm balloon_timeout
+Display time of balloon tooltip on system tray icon, in milliseconds.
+Default value: 10000.
+.It Cm browser
+Command to lauch web browser.
+Default value: xdg-open
+.It Cm cert
+Path to TLS certificate for connection to GitHub.
+Default value:
+.Pa /etc/ssl/cert.pem .
+.It Cm check_timeout
+Period between connections to GitHub, in milliseconds.
+Ignored if GitHub instructs to use larger value, which is always true for the
+default value.
+.It Cm filename_read
+Path to image that would be used for a system tray icon if there are no
+unread notifications.
+Default value:
+.Pa DATADIR/read.png .
+.It Cm filename_unread
+Path to image that would be used for a system tray icon if there are unread
+notifications.
+Default value:
+.Pa DATADIR/unread.png .
+.It Cm gh_token
+GitHub token.
+No default value.
+.El
+.El
+.Sh AUTHOR
+.An Dmitrij D. Czarkoff Aq czarkoff@gmail.com .
+.Sh SECURITY CONSIDERATIONS
+.Nm
+evaluates its configuration file as Tcl source code, which may present a
+security issue unless due security measures are taken.
+At very least the following is suggested:
+.Bl -bullet
+.It
+Provide
+.Nm
+with dedicated GitHub token with only absolutely necessary OAuth scopes.
+(See
+.Sx DECRIPTION
+section for details.)
+.It
+Set appropriate permissions (eg. 0500) on configuration file.
+.It
+If you do not intend to use a configuration file, create an empty configuration
+file with access permissions 0000.
+.El

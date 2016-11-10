@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=TkGitHub
+Name[en_US]=TkGitHub
+GenericName=GitHub notifier
+GenericName[en_US]=GitHub notifier
+Comment=System tray icon providing access to GitHub notifications
+Exec=tkgithub
+Terminal=false
+Type=Application
+Categories=Development;Feed;
