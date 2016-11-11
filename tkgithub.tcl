@@ -106,10 +106,12 @@ proc initicons {} {
 }
 
 bind .t <ButtonPress-3> {
+    mkmenu
     tk_popup .p %X %Y
 }
 
 bind .t <ButtonPress-1> {
+    mkmenu
     tk_popup .p %X %Y
 }
 
@@ -127,12 +129,9 @@ proc go {id} {
 proc mkmenu {} {
     global p
     global notifications
-    global icon icon_read icon_unread
 
     set repos [dict create]
     set names [list]
-
-    if {[image width icon] == 0} initicons
 
     $p delete 0 end
     if {[dict size $notifications] > 0} {
@@ -156,10 +155,8 @@ proc mkmenu {} {
             }
         }
         $p add separator
-        icon copy icon_unread
     } else {
         $p add command -label "No unread notifications" -state disabled
-        icon copy icon_read
     }
     $p add command -label "Exit" -command [list exit 0]
 }
@@ -176,6 +173,7 @@ proc parseinfo {tok} {
     global notifications
     global check_timeout
     global balloon_timeout
+    global icon icon_read icon_unread
 
     set h [http::meta $tok]
     set d [http::data $tok]
@@ -203,13 +201,19 @@ proc parseinfo {tok} {
 
             dict set notifications $id $d
         }
-        mkmenu
     }
     .t balloon [clock format [clock scan $ts]] $balloon_timeout
 
     dict set headers If-Modified-Since $ts
     set timeout [max $check_timeout [expr [dict get $h X-Poll-Interval] * 1000]]
     after $timeout getinfo
+
+    if {[image width icon] == 0} initicons
+    if {[dict size $notifications] > 0} {
+        icon copy icon_unread
+    } else {
+        icon copy icon_read
+    }
 }
 
 proc markallread {} {
@@ -222,7 +226,6 @@ proc markallread {} {
     http::geturl $url -command http::cleanup -query $query -method PUT -headers $headers
 
     set notifications {}
-    mkmenu
 }
 
 getinfo
