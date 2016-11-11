@@ -134,7 +134,7 @@ proc mkmenu {} {
 
     if {[image width icon] == 0} initicons
 
-    $p delete 1 end
+    $p delete 0 end
     if {[dict size $notifications] > 0} {
         dict for {id d} $notifications {
             set repo [dict get $d repo]
@@ -166,12 +166,17 @@ proc mkmenu {} {
 
 proc getinfo {} {
     global base_headers headers
+
+    set url https://api.github.com/notifications
+    http::geturl $url -headers $headers -command parseinfo
+}
+
+proc parseinfo {tok} {
+    global base_headers headers
     global notifications
     global check_timeout
     global balloon_timeout
 
-    set url https://api.github.com/notifications
-    set tok [http::geturl $url -headers $headers]
     set h [http::meta $tok]
     set d [http::data $tok]
     http::cleanup $tok
@@ -214,8 +219,7 @@ proc markallread {} {
     set url https://api.github.com/notifications
     set date [dict get $headers If-Modified-Since]
     set query "{\"last_read_at\": \"$date\"}"
-    set tok [http::geturl $url -query $query -method PUT -headers $headers]
-    http::cleanup $tok
+    http::geturl $url -command http::cleanup -query $query -method PUT -headers $headers
 
     set notifications {}
     mkmenu
