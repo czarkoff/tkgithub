@@ -34,12 +34,7 @@ set filename_unread "$datadir/unread.png"
 set filename_read "$datadir/read.png"
 set cert "/etc/ssl/cert.pem"
 
-if {[file readable $rc]} {
-    set f [open $rc]
-    set config [read $f]
-    close $f
-    eval $config
-}
+catch {source $rc}
 
 if {![info exists gh_token]} {
     set e "No GitHub token provided"
