@@ -18,11 +18,6 @@ if {[info exists env{XDG_CONFIG_DIR}]} {
 } else {
     set configroot "${env(HOME)}/.config"
 }
-# Read configuration
-if {![file exists $configroot]} {
-    puts "Can't access $configroot directory"
-    exit 1
-}
 
 set rc $configroot/tkgithubrc
 
