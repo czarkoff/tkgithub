@@ -209,6 +209,11 @@ proc parseinfo {tok} {
 proc markallread {} {
     global notifications
     global headers
+    global icon
+
+    set m "Mark all notifications read?"
+    set c [tk_messageBox -type yesno -icon question -message $m -title $m]
+    if {$c == no} return
 
     set url https://api.github.com/notifications
     set date [dict get $headers If-Modified-Since]
@@ -216,6 +221,7 @@ proc markallread {} {
     http::geturl $url -command http::cleanup -query $query -method PUT -headers $headers
 
     set notifications {}
+    icon copy icon_unread
 }
 
 getinfo
