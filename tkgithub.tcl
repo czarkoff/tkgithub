@@ -113,7 +113,6 @@ proc go {id} {
 
     exec -ignorestderr $browser $url &
     set notifications [dict remove $notifications $id]
-    mkmenu
 }
 
 proc mkmenu {} {
